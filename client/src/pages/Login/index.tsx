@@ -1,15 +1,28 @@
 import {useState} from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/button';
+import { toast } from "react-hot-toast";
+import { LoginUser } from '../../apicalls/users';
 function Login(){
-
+    const navigate = useNavigate();
     const [user,setUser] = useState({
         email:"",
         password:""
     })
-    const login =()=>{
-        console.log(user);
-    }
+    const login = async () => {
+        try {
+          const response = await LoginUser(user);
+          if (response.success) {
+            localStorage.setItem("token", response.data);
+            navigate("/");
+            toast.success(response.message);
+          } else {
+            toast.error(response.message);
+          }
+        } catch (error) {
+          toast.error(error.message);
+        }
+      };
 
     return (
         <div className="flex  justify-center h-screen items-center bg-primary">

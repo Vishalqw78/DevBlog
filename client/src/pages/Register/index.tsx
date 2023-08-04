@@ -1,15 +1,29 @@
 import {useState} from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {toast} from 'react-hot-toast';
 import Button from '../../components/button';
+import { RegisterUser } from '../../apicalls/users';
 function Register(){
 
+    const navigate = useNavigate();
     const [user,setUser] = useState({
         name:"",
         email:"",
         password:""
     })
-    const register =()=>{
-        console.log(user);
+    const register =async()=>{
+        try {
+            const response = await RegisterUser(user);
+            if(response.success){
+                toast.success(response.message);
+                navigate("/login");
+            }
+            else{
+                toast.error(response.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
 
     return (
